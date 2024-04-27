@@ -1,78 +1,130 @@
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
-public class ConcreteCompany implements Company{
+public class ConcreteCompany<T extends Employee> implements Company{
 
     private static char KeyID = 'A';
 
     protected final String companyID;
     protected final String companyName;
-    protected Set<Company> subCompanies;
+    protected HashSet<Company> subCompanies;
+    protected HashSet<String> employeeRequests;
+    protected HashMap<String, T> myEmployee; // employee flight inheritance and flexibility
+    protected CompanyNotifier notifyService;
 
     public ConcreteCompany(String companyID, String companyName){
         this.companyID = companyID + KeyID;
         this.companyName = companyName;
+        this.employeeRequests = new HashSet<>();
         this.subCompanies = new HashSet<>();
+        this.myEmployee = new HashMap<>();
+        this.notifyService = new CompanyNotifier();
         KeyID++;
     }
 
     @Override
-    public void addCompany(Company company) {
-        if(this.isSubCompanyOf(company)){
-            System.out.println("Fail to add Sub-Company, "+ this.companyName + "is Sub Company of" + company.getCompanyName());
-        }else subCompanies.add(company);
-    }
-
-    @Override
-    public boolean removeCompany(Company company) {
-        if(!subCompanies.remove(company)){
-            System.out.println(company.getCompanyName() + "Remove fail, might be a sub of sub company, for a full check to remove use removeDeepSubCompany");
-            return false;
+    public void setChildCompany(Company company) {
+        if(this.isChildOf(company)){
+           System.out.println("Cannot add a parent company as a sub company");
+        }else {
+            subCompanies.add(company);
         }
-        return true;
     }
 
     @Override
-    public String getCompanyID(){
+    public void removeAllOccurrenceChildCompany(Company subCompany) {
+        dfsRemove(this, subCompany);
+    }
+
+    @Override
+    public String getID(){
         return this.companyID;
     }
 
     @Override
-    public String getCompanyName(){
+    public String getName(){
         return this.companyName;
     }
 
     @Override
-    public Set<Company> getCompanies() {
+    public Set<Company> getChildrenCompany() {
         return this.subCompanies;
     }
 
     @Override
-    public boolean isSubCompanyOf(Company company) {
-        if(company.getCompanyID().equals(this.companyID)) return true;
-        if(company.getCompanies().isEmpty()) return false;
+    public void setRequestEmployeeUser(String username) {
+        if(username.isEmpty()){
+            System.out.println("Invalid username");
+        }
+        else if(this.employeeRequests.contains(username)){
+            System.out.println("That username has already been requested to be created as employee of" + this.companyName);
+        }
+        else this.employeeRequests.add(username);
+    }
+
+    @Override
+    public HashSet<String> getRequests(){
+        return this.employeeRequests;
+    }
+
+    @Override
+    public boolean isChildOf(Company company) {
+        if(company.getID().equals(this.companyID)) return true;
+        if(company.getChildrenCompany().isEmpty()) return false;
 
         boolean isSub = false;
-        for(Company comp : company.getCompanies()){
-            isSub |= this.isSubCompanyOf(comp);
+        for(Company comp : company.getChildrenCompany()){
+            isSub |= this.isChildOf(comp);
         }
-
         return isSub;
     }
 
     @Override
-    public int removeDeepSubCompany(Company subCompany) {
+    public void updateRequests(HashMap<String, Employee> status) {
+        Iterator<String> iterator = this.employeeRequests.iterator();
+        while (iterator.hasNext()) {
+            String username = iterator.next();
+            if (status.containsKey(username)) {
+                this.myEmployee.put(username, (T) status.get(username));
+                iterator.remove();  // Removing using the iterator
+            }
+        }
+    }
+
+    @Override
+    public void subscribe(User user){
+        if(isSubscriber(user)){
+            this.notifyService.removeSubscriber(user);
+        }else{
+            this.notifyService.addSubscriber(user);
+        }
+    }
+
+    @Override
+    public void notify(String details){
+        String info = "Want to let you know that, " + details;
+        this.notifyService.notifyCompanySubscribers(this.companyName, info);
+    }
+
+    private int dfsRemove(Company currentCompany, Company subCompany) {
         int numOfRemovedRef = 0;
-        if (subCompany.isSubCompanyOf(this)) {
-            for (Company comp : this.getCompanies()) {
-                if (subCompany.isSubCompanyOf(comp)) {
-                    comp.removeCompany(subCompany);
-                    numOfRemovedRef++;
-                    numOfRemovedRef += comp.removeDeepSubCompany(subCompany);
-                }
+        Iterator<Company> iterator = currentCompany.getChildrenCompany().iterator();
+        while (iterator.hasNext()) {
+            Company comp = iterator.next();
+            numOfRemovedRef += dfsRemove(comp, subCompany);
+            if (comp.equals(subCompany)) {
+                iterator.remove();
+                numOfRemovedRef++;
             }
         }
         return numOfRemovedRef;
     }
 
+    @Override
+    public boolean isSubscriber(User user) {
+        return this.notifyService.isSubscriber(user);
+    }
 }
+

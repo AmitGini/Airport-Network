@@ -1,15 +1,20 @@
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public interface Company {
 
-
-    public void addCompany(Company company);
-    public boolean removeCompany(Company company);
-    public Set<Company> getCompanies();
-    public String getCompanyID();
-    public String getCompanyName();
-    public boolean isSubCompanyOf(Company company);
-    public int removeDeepSubCompany(Company subCompany);
-
+    public String getID();
+    public String getName();
+    public Set<Company> getChildrenCompany();
+    public HashSet<String> getRequests();
+    public void setRequestEmployeeUser(String username);
+    public void setChildCompany(Company company);
+    public void removeAllOccurrenceChildCompany(Company subCompany);
+    public void updateRequests(HashMap<String,Employee> status);
+    public boolean isChildOf(Company company);
+    public boolean isSubscriber(User user);
+    public void notify(String details);
+    public void subscribe(User user);
 
 }

@@ -1,13 +1,19 @@
-public abstract class Employee extends Customer{
+public abstract class Employee<T extends Company> extends Customer{
 
-    protected Company myCompany;
+    protected T myCompany;
 
-    public Employee(Company company, String username, String password){
+    public Employee(T company, String username, String password){
         super(username, password);
         this.myCompany = company;
     }
 
-    public Company getMyCompany() {
+    public T getMyCompany() {
         return this.myCompany;
+    }
+
+    public boolean flightActionVerfication(T company){
+        boolean isEmployeeVerified = this.myCompany.isChildOf(company) || this.myCompany.getID().equals(company.getID());
+        if(!isEmployeeVerified) System.out.println(this.myUsername + "is Not " + company.getName() + "Employee");
+        return isEmployeeVerified;
     }
 }
