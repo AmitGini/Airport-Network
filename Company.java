@@ -2,6 +2,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+
+// Define Company interface - its methods
 public interface Company {
 
     public String getID();

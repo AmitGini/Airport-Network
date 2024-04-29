@@ -1,21 +1,22 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class NotificationService<T extends User> {
+// Observer design pattern
+public abstract class NotificationService{
 
-    private Set<T> subscribers;
+    private Set<User> subscribers;
 
     public NotificationService(){
         this.subscribers = new HashSet();
     }
 
-    public void addSubscriber(T user){
+    public void addSubscriber(User user){
         if(user != null){
             this.subscribers.add(user);
         }
     }
 
-    public void removeSubscriber(T user){
+    public void removeSubscriber(User user){
         if(user!=null){
             this.subscribers.remove(user);
         }
@@ -27,8 +28,8 @@ public abstract class NotificationService<T extends User> {
         }
     }
 
-    public boolean isSubscriber(T user){
-        for(T subscriber: this.subscribers){
+    public boolean isSubscriber(User user){
+        for(User subscriber: this.subscribers){
             if(subscriber.getUsername().equals(user.getUsername())) return true;
         }
         return false;

@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// using Composite Design Pattern and inheritance
 public class Customer extends User {
 
     protected double myMoney;

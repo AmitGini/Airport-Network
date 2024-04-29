@@ -1,17 +1,17 @@
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
-
+// Composite Design Pattern
 public class FlightCompany extends ConcreteCompany {
 
     private HashSet<Flight> myFlights;
+    private HashMap<String, EmployeeFlight> myEmployee;
 
     // Constructor
     public FlightCompany(String companyName){
         super(PrefixCompanyID.FLIGHT_ID.getPrefix(), companyName); //FLC - Flight Company same prefix of companyID
         this.myFlights = new HashSet<>();
-        super.myEmployee = new HashMap<String, EmployeeFlight>();
+        this.myEmployee = new HashMap<String, EmployeeFlight>();
     }
 
     public void addToFlightSet(Flight flight){

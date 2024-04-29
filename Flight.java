@@ -1,21 +1,19 @@
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
+// Flight Using the Flyweight Design Pattern and Composite - flightData
 public class Flight {
 
     private final FlightCompany company;
     private final String flightID;
     private final FlightNotifier notifyService;
-    private String to;
-    private String from;
-    private ZonedDateTime dateTime;
-    private double durationTime;
-    private double price;
-    private int capacity;
+    private final FlightData flightData;  // flyweight design pattern
+
     private List<Customer> flightCustomers;
+    private ZonedDateTime dateTime;
+    private double price;
     private int availableSeats;
     private double discountNumerical;
 
@@ -23,12 +21,9 @@ public class Flight {
         this.flightCustomers = new ArrayList<>();
         this.company = company;
         this.flightID = flightID;
-        this.to = to;
-        this.from = from;
+        this.flightData = FlightDataFactory.getFlightData(to, from, capacity ,duration);
         this.dateTime = dateTime;
-        this.durationTime = duration;
         this.price = price;
-        this.capacity = capacity;
         this.availableSeats = capacity;
         this.notifyService = new FlightNotifier();
         this.discountNumerical = 0;
@@ -46,7 +41,7 @@ public class Flight {
         this.dateTime = dateTime;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm 'UTC' XXX '(IL)'");
         String formattedFutureDateTime = this.dateTime.format(formatter);
-        String flightInfo = "Flight ID: " + this.flightID + " to: " + this.to + " from: " + this.from;
+        String flightInfo = "Flight ID: " + this.flightID + " to: " + this.flightData.getTo() + " from: " + this.flightData.getFrom();
         this.notifyService.notifyDateFlightChange(flightInfo,formattedFutureDateTime);
     }
 
@@ -73,7 +68,7 @@ public class Flight {
     }
 
     public int getAvailableSeats() {
-        return availableSeats;
+        return this.availableSeats;
     }
 
     public FlightCompany getCompany(){
@@ -85,18 +80,22 @@ public class Flight {
     }
 
     public String getTo() {
-        return this.to;
+        return this.flightData.getTo();
     }
 
     public String getFrom() {
-        return this.from;
+        return this.flightData.getFrom();
+    }
+
+    public int getCapacity() {
+        return this.flightData.getCapacity();
     }
 
     public String toString(){
         // define new Formatting the ZonedDateTime object
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm 'UTC' XXX '(IL)'");
         String formattedDateTime = this.dateTime.format(formatter);
-        return this.flightID + " - " + this.from + " - " + this.to + " - " + formattedDateTime + " - " + this.durationTime + " - " + getTicketPrice() + " - " + flightCustomers.size()+"/"+capacity;
+        return this.flightID + " - " + this.flightData.getFrom() + " - " + this.flightData.getTo() + " - " + formattedDateTime + " - " + this.flightData.getDurationTime() + " - " + getTicketPrice() + " - " + flightCustomers.size()+"/"+this.flightData.getCapacity();
     }
 
 }

@@ -1,6 +1,7 @@
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 
+// using Composite Design Pattern and inheritance
 public class EmployeeFlight extends Employee {
 
     private final FlightCompany myFlightCompany;

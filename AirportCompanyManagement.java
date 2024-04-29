@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+// using Composite and Strategy Design Pattern
 public class AirportCompanyManagement {
 
     private static AirportCompanyManagement instance = null;
@@ -89,6 +90,10 @@ public class AirportCompanyManagement {
         if(this.users.containsKey(username)){
             this.users.get(username).disconnect();
         }
+    }
+
+    public User getUser(String username){
+        return this.users.get(username);
     }
 
     public void showFlights() {

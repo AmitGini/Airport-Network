@@ -1,5 +1,6 @@
 import java.util.List;
 
+// Strategy design pattern
 public class SortByPrice implements SortStrategy{
     @Override
     public void sort(List<Flight> flightList) {

@@ -1,17 +1,19 @@
-public abstract class Employee<T extends Company> extends Customer{
 
-    protected T myCompany;
+// using Composite Design Pattern and inheritance
+public abstract class Employee extends Customer{
 
-    public Employee(T company, String username, String password){
+    protected Company myCompany;
+
+    public Employee(Company company, String username, String password){
         super(username, password);
         this.myCompany = company;
     }
 
-    public T getMyCompany() {
+    public Company getMyCompany() {
         return this.myCompany;
     }
 
-    public boolean flightActionVerfication(T company){
+    public boolean flightActionVerfication(Company company){
         boolean isEmployeeVerified = this.myCompany.isChildOf(company) || this.myCompany.getID().equals(company.getID());
         if(!isEmployeeVerified) System.out.println(this.myUsername + "is Not " + company.getName() + "Employee");
         return isEmployeeVerified;

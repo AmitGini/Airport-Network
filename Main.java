@@ -23,7 +23,7 @@ public class Main {
         flightAirPort.sign_out("Customer");
         flightAirPort.updateEmployees();
 
-        EmployeeFlight user = (EmployeeFlight) testCompany.myEmployee.get("Employee");
+        EmployeeFlight user = (EmployeeFlight) flightAirPort.getUser("Employee");
 
         int[] date1 = {2025, 4, 18, 4, 15};
         int[] date2 = {2025, 4, 20, 6, 15};
@@ -78,7 +78,7 @@ public class Main {
         }
     }
 
-    private static void customerDialog(Customer customer) {
+    private static void customerDialog(User user) {
 
         while (true) {
             clearConsole();
@@ -96,23 +96,23 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    showFlightsActions(customer);
+                    showFlightsActions(user);
                     break;
 
                 case "2":
-                    showCompanyRedundantActions(customer);
+                    showCompanyRedundantActions(user);
                     break;
 
                 case "3":
                     clearConsole();
                     System.out.println("\n**** My Flight Tickets ****\n");
-                    customer.printMyTickets();
+                    ((Customer)user).printMyTickets();
                     break;
 
                 case "4":
                     clearConsole();
                     System.out.println("\n**** Check Balance ****");
-                    System.out.println("Your balance is: " + customer.getMyMoney());
+                    System.out.println("Your balance is: " + ((Customer)user).getMyMoney());
                     break;
 
                 case "5":
@@ -126,14 +126,14 @@ public class Main {
                     } catch (NumberFormatException nfe) {
                         amount = 0;
                     }
-                    customer.setMyMoney(amount);
+                    ((Customer)user).setMyMoney(amount);
                     scan.nextLine();
                     break;
 
                 case "6":
                     clearConsole();
                     System.out.println("\n**** Notifications ****\n");
-                    customer.showNotifications();
+                    (user).showNotifications();
                     break;
 
                 case "7":
@@ -250,6 +250,7 @@ public class Main {
                 message = scan.nextLine();
                 company.notify(message);
                 return;
+
             default:
                 return;
         }
@@ -317,7 +318,7 @@ public class Main {
         System.out.print("Enter Password: ");
         String password = scan.nextLine();
         User userIs = flightAirPort.sign_in(username, password);
-        if (userIs != null) customerDialog((Customer) userIs);
+        if (userIs != null) customerDialog(userIs);
     }
 
     private static void logout() {
@@ -338,10 +339,10 @@ public class Main {
         String password = scan.nextLine();
         User userRegistration = flightAirPort.sign_up(username, password);
         flightAirPort.updateEmployees();
-        customerDialog((Customer) userRegistration);
+        customerDialog(userRegistration);
     }
 
-    private static void showFlightsActions(Customer customer){
+    private static void showFlightsActions(User user){
         boolean sortedFlag = false;
 
         while (true) {
@@ -353,7 +354,7 @@ public class Main {
             }else sortedFlag = false;
             System.out.println("1. Sort Flights");
             System.out.println("2. Buy Ticket");
-            boolean isEmployeeFlight = customer instanceof EmployeeFlight;
+            boolean isEmployeeFlight = user instanceof EmployeeFlight;
             if(isEmployeeFlight){
                 System.out.println("3. Create a New Flight");
                 System.out.println("4. Change Flight Price");
@@ -375,27 +376,27 @@ public class Main {
 
                     case "2":
                         clearConsole();
-                        buyTicket(customer);
+                        buyTicket(user);
                         return;
 
                     case "3":
                         if (isEmployeeFlight) {
                             clearConsole();
-                            employeeCreateNewFlight((EmployeeFlight) customer);
+                            employeeCreateNewFlight((EmployeeFlight) user);
                         }
                         return;
 
                     case "4":
                         if (isEmployeeFlight) {
                             clearConsole();
-                            employeeChangeFlightPrice((EmployeeFlight) customer);
+                            employeeChangeFlightPrice((EmployeeFlight) user);
                         }
                         return;
 
                     case "5":
                         if (isEmployeeFlight) {
                             clearConsole();
-                            employeeChangeDateAndTime((EmployeeFlight) customer);
+                            employeeChangeDateAndTime((EmployeeFlight) user);
                         }
                         return;
 
@@ -428,12 +429,12 @@ public class Main {
             }
     }
 
-    private static void showCompanyRedundantActions(Customer customer) {
+    private static void showCompanyRedundantActions(User user) {
 
         clearConsole();
         System.out.println("\n**** All Airport Companies ****");
         System.out.println("NOTE! Company you are following will be Signed by '(Following)'");
-        flightAirPort.showCompanies(customer);
+        flightAirPort.showCompanies(user);
 
         System.out.print("\nEnter your Company ID or Anything else to return: ");
 
@@ -444,7 +445,7 @@ public class Main {
             return;
         }
 
-        boolean isFlightEmployee = customer instanceof EmployeeFlight;
+        boolean isFlightEmployee = user instanceof EmployeeFlight;
 
         clearConsole();
         System.out.println("\n**** Company Actions Screen ****");
@@ -456,7 +457,7 @@ public class Main {
 
         switch (followingChoice) {
             case "1":
-                tempCompany.subscribe(customer);
+                tempCompany.subscribe(user);
                 return;
             case "2":
                 if(isFlightEmployee){
@@ -468,7 +469,7 @@ public class Main {
         }
     }
 
-    private static void buyTicket(Customer customer) {
+    private static void buyTicket(User customer) {
         System.out.println("\n*** Buy a Ticket ***");
         flightAirPort.showFlights();
         System.out.print("Enter Flight ID: ");
@@ -476,7 +477,7 @@ public class Main {
         Flight flight = flightAirPort.getFlightByID(flightID);
 
         if (flight != null && flight.getAvailableSeats() > 0) {
-            customer.buyTicket(flight);
+            ((Customer)customer).buyTicket(flight);
         } else {
             System.out.println("No available seats for this flight.");
         }

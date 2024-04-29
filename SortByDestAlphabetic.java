@@ -1,5 +1,6 @@
 import java.util.List;
 
+// Strategy design pattern
 public class SortByDestAlphabetic implements SortStrategy{
     @Override
     public void sort(List<Flight> flightList) {

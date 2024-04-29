@@ -3,16 +3,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class ConcreteCompany<T extends Employee> implements Company{
+// using Composite Design Pattern and implementations
+public class ConcreteCompany implements Company{
 
     private static char KeyID = 'A';
 
     protected final String companyID;
     protected final String companyName;
     protected HashSet<Company> subCompanies;
-    protected HashSet<String> employeeRequests;
-    protected HashMap<String, T> myEmployee; // employee flight inheritance and flexibility
+    protected HashMap<String, Employee> myEmployee; // employee flight inheritance and flexibility
     protected CompanyNotifier notifyService;
+    protected HashSet<String> employeeRequests;
 
     public ConcreteCompany(String companyID, String companyName){
         this.companyID = companyID + KeyID;
@@ -87,7 +88,7 @@ public class ConcreteCompany<T extends Employee> implements Company{
         while (iterator.hasNext()) {
             String username = iterator.next();
             if (status.containsKey(username)) {
-                this.myEmployee.put(username, (T) status.get(username));
+                this.myEmployee.put(username, (Employee) status.get(username));
                 iterator.remove();  // Removing using the iterator
             }
         }
